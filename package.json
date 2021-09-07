@@ -8,7 +8,8 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint --ext .vue,.js ./",
-    "lint:fix": "eslint --fix --ext .vue,.js ./"
+    "lint:fix": "eslint --fix --ext .vue,.js ./",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^7.17.0",
+    "husky": "^7.0.2",
     "prettier": "^2.3.2",
     "vite": "^2.5.1"
   }
