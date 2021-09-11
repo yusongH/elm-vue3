@@ -1,5 +1,5 @@
 {
-  //保存时eslint自动修复错误 新版本改为下面那个配置
+  // 保存时eslint自动修复错误 新版本改为下面那个配置
   // "eslint.autoFixOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
