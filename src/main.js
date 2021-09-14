@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router'
 import store from '@/store'
+// 计算设置rem的基准值，即html的font-size
+import 'amfe-flexible'
 // vant
 import { Button, NavBar, Form, Field, CellGroup } from 'vant'
 
