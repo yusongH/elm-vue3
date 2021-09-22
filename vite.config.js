@@ -22,6 +22,7 @@ export default defineConfig({
       ]
     })
   ],
+  // Vite自身已经集成PostCSS，无需再次安装。另外也无需单独创建PostCSS配置文件，已集成到vite.config.js的css选项中
   css: {
     postcss: {
       plugins: [
