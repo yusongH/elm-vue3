@@ -8,19 +8,22 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es6: true,
+    es6: true
   },
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
     'plugin:prettier/recommended'
   ],
-
+  plugins: [
+    // 检查html文件中的js代码
+    'html'
+  ],
   // add your custom rules here
   rules: {
     'prettier/prettier': 'error',
     // allow async-await
-    'generator-star-spacing': 'off',
+    'generator-star-spacing': 'off'
     // 'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // allow debugger during development
     // 'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -28,5 +31,5 @@ module.exports = {
     // quotes: ['error', 'single'],
     // 强制不使用分号结尾
     // semi: ['error', 'never']
-  },
+  }
 }
