@@ -7,7 +7,10 @@ import postCssPxToRem from 'postcss-pxtorem'
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './src'),
+      assets: '@/assets',
+      utils: '@/utils',
+      api: '@/api'
     }
   },
   plugins: [
@@ -17,7 +20,7 @@ export default defineConfig({
         {
           libraryName: 'vant',
           esModule: true,
-          resolveStyle: (name) => `vant/es/${name}/style`
+          resolveStyle: name => `vant/es/${name}/style`
         }
       ]
     })

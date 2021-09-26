@@ -34,13 +34,16 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { getCaptchas } from 'api'
 
 export default defineComponent({
   name: 'Login',
   setup() {
+    // 获取验证码
+    getCaptchas()
+
     // 获取router实例
     const router = useRouter()
-
     // 返回上一页
     const onClickLeft = () => {
       router.back()
