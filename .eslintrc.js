@@ -61,7 +61,7 @@ module.exports = {
      * 风格指南
      */
     // 'array-bracket-spacing': ['error', 'always'], // 数组方括号内必须空格
-    'space-before-function-paren': 0,
+    'space-before-function-paren': 0, // 函数名称或function关键字与开始参数之间允许有空格
     'array-bracket-spacing': 0, // 数组方括号内必须空格
     'comma-dangle': 2, // 禁止末尾逗号
     'eol-last': 2, // 要求文件末尾存在空行
@@ -72,7 +72,7 @@ module.exports = {
     // 禁止出现多行空行
     'no-multiple-empty-lines': ['error', { max: 1 }],
     semi: ['error', 'never'], // 禁止末尾分号
-    quotes: ['error', 'single'],
+    quotes: ['error', 'single'], // 强制使用单引号
     'space-infix-ops': 2, // 操作符周围必须有空格
     'spaced-comment': ['error', 'always'], // 注释后面必须跟随至少一个空白
     'object-curly-spacing': 0,
