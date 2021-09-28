@@ -8,7 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      assets: '@/assets',
+      // 为了解决在vite下less的@import问题，把下面的'@/assets'改成绝对路径
+      assets: path.resolve(__dirname, './src/assets'),
       utils: '@/utils',
       api: '@/api'
     }
@@ -34,6 +35,18 @@ export default defineConfig({
           propList: ['*']
         })
       ]
+    },
+    preprocessorOptions: {
+      less: {
+        // 注入全局less变量
+        modifyVars: {
+          hack: `true; @import (reference) "${path.resolve(
+            __dirname,
+            './src/assets/styles/mixin.less'
+          )}";`
+        },
+        javascriptEnabled: true
+      }
     }
   },
   server: {
