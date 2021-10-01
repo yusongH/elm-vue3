@@ -23,8 +23,10 @@ service.interceptors.request.use(
       config.params._t = new Date().getTime()
     }
 
-    // 显示loading
-    showLoading()
+    if (config.isShowLoading) {
+      // 显示loading
+      showLoading()
+    }
 
     return config
   },
@@ -36,8 +38,10 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    // 关闭loading
-    closeLoading()
+    if (response.config.isShowLoading) {
+      // 关闭loading
+      closeLoading()
+    }
 
     // 200状态码
     if (response.status === 200) {
