@@ -53,6 +53,9 @@ export default defineConfig({
     proxy: {
       '/v1': {
         target: 'http://localhost:8001'
+      },
+      '/v2': {
+        target: 'http://localhost:8001'
       }
     }
   }

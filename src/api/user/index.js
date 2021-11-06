@@ -7,7 +7,8 @@ import request from 'utils/http'
 export const getCaptchas = () => {
   return request({
     url: '/v1/captchas',
-    method: 'post'
+    method: 'post',
+    isShowLoading: false
   })
 }
 
@@ -15,8 +16,9 @@ export const getCaptchas = () => {
  * 账号密码登录
  */
 export const accountLogin = (username, password, captcha_code) => {
-  return request.post({
+  return request({
     url: '/v2/login',
+    method: 'post',
     data: {
       username,
       password,
