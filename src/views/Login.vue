@@ -5,7 +5,7 @@
     left-arrow
     @click-left="onClickLeft"
   ></van-nav-bar>
-  <van-form @submit="onSubmit">
+  <van-form class="login-form" @submit="onSubmit">
     <van-cell-group inset>
       <van-field
         v-model="username"
@@ -115,7 +115,6 @@ export default defineComponent({
       const { username, password, captchasCode } = value
       // 检验用户名、密码、验证码
       const res = await accountLogin(username, password, captchasCode)
-      console.log('===', res)
       if (res.status === 0) {
         // 登录失败，重新获取验证码
         getCaptchasBase64()
@@ -144,22 +143,25 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.captchas-box {
-  .captchas-img {
-    height: 24px;
-    vertical-align: middle;
+.login-form {
+  padding-top: 10px;
+  .captchas-box {
+    .captchas-img {
+      height: 24px;
+      vertical-align: middle;
+    }
   }
-}
 
-.login-tips {
-  padding: 0 20px;
-  font-size: 14px;
-  color: @font-color;
-}
+  .login-tips {
+    padding: 0 20px;
+    font-size: 14px;
+    color: @font-color;
+  }
 
-.submit-box {
-  width: 80%;
-  margin: 0 auto;
-  margin-top: 20px;
+  .submit-box {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 20px;
+  }
 }
 </style>
