@@ -1,4 +1,4 @@
-import { Button, NavBar, Form, Field, CellGroup, Toast } from 'vant'
+import { Button, NavBar, Form, Field, CellGroup, Toast, Cell } from 'vant'
 
 export default app => {
   app.use(Button)
@@ -6,5 +6,6 @@ export default app => {
   app.use(Form)
   app.use(Field)
   app.use(CellGroup)
+  app.use(Cell)
   app.use(Toast)
 }

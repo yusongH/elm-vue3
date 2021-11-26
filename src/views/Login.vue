@@ -45,9 +45,9 @@
     <p class="login-tips">温馨提示：未注册过的账号，登录时将自动注册</p>
     <p class="login-tips">注册过的用户可凭账号密码登录</p>
     <div class="submit-box">
-      <van-button round block type="primary" native-type="submit"
-        >提交</van-button
-      >
+      <van-button round block type="primary" native-type="submit">
+        提交
+      </van-button>
     </div>
   </van-form>
 </template>
