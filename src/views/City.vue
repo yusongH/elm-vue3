@@ -82,7 +82,7 @@ const onClickLeft = () => {
 const onClickRight = () => {
   // 跳转
   router.push({
-    name: 'home'
+    name: 'cityList'
   })
 }
 
