@@ -29,7 +29,7 @@
 
     <!-- 城市列表 -->
     <div
-      v-for="(value, key, index) in groupCityList"
+      v-for="(value, key, index) in sortGroupCity"
       :key="key"
       class="city-list"
     >
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, computed } from 'vue'
 import { getCityGuess, getHotCity, getGroupCity } from 'api'
 
 export default defineComponent({
@@ -96,12 +96,24 @@ export default defineComponent({
     }
     // 请求
     requestGroupCity()
+    // 城市排序
+    const sortGroupCity = computed(() => {
+      const sortobj = {}
+      for (let i = 65; i <= 90; i++) {
+        if (groupCityList.value[String.fromCharCode(i)]) {
+          sortobj[String.fromCharCode(i)] =
+            groupCityList.value[String.fromCharCode(i)]
+        }
+      }
+
+      return sortobj
+    })
     // 城市列表 end
 
     return {
       guessCity,
       hotCityList,
-      groupCityList
+      sortGroupCity
     }
   }
 })
