@@ -11,7 +11,12 @@
           title="当前定位城市："
           value="定位不准时，在城市列表中选择"
         />
-        <van-cell title-class="blue-color" :title="guessCity.name" is-link />
+        <van-cell
+          title-class="blue-color"
+          :title="guessCity.name"
+          is-link
+          :to="`/city/${guessCity.id}`"
+        />
       </van-cell-group>
     </div>
 
@@ -20,7 +25,11 @@
       <div class="city-list-title">热门城市</div>
       <div class="city-list-cont">
         <ul>
-          <li v-for="item in hotCityList.list" :key="item.id">
+          <li
+            v-for="item in hotCityList.list"
+            :key="item.id"
+            @click="onClickCity(item)"
+          >
             {{ item.name }}
           </li>
         </ul>
@@ -39,7 +48,13 @@
       </div>
       <div class="city-list-cont">
         <ul>
-          <li v-for="subItem in value" :key="subItem.id">{{ subItem.name }}</li>
+          <li
+            v-for="subItem in value"
+            :key="subItem.id"
+            @click="onClickCity(subItem)"
+          >
+            {{ subItem.name }}
+          </li>
         </ul>
       </div>
     </div>
@@ -48,11 +63,14 @@
 
 <script>
 import { defineComponent, reactive, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { getCityGuess, getHotCity, getGroupCity } from 'api'
 
 export default defineComponent({
   name: 'Home',
   setup() {
+    const router = useRouter()
+
     // 默认城市 start
     const guessCity = reactive({
       name: '',
@@ -82,7 +100,6 @@ export default defineComponent({
           id: item.id
         }
       })
-      console.log(hotCityList)
     }
     // 调用请求
     requestHotCity()
@@ -108,12 +125,22 @@ export default defineComponent({
 
       return sortobj
     })
+
+    /**
+     * 点击城市跳转
+     */
+    const onClickCity = city => {
+      router.push({
+        path: `/city/${city.id}`
+      })
+    }
     // 城市列表 end
 
     return {
       guessCity,
       hotCityList,
-      sortGroupCity
+      sortGroupCity,
+      onClickCity
     }
   }
 })
