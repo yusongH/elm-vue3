@@ -154,6 +154,14 @@ const onClickCity = city => {
     searchHistoryList.value.push(city)
     setStorage('searchHistory', JSON.stringify(searchHistoryList.value))
   }
+
+  // 跳转首页
+  router.push({
+    name: 'home',
+    query: {
+      geohash: city.geohash
+    }
+  })
 }
 
 /**

@@ -1,38 +1,26 @@
 import request from 'utils/http'
 
 /**
- * 获取首页默认地址
+ * 获取首页地址信息
  */
-export const getCityGuess = () => {
+export const getAddress = geohash => {
   return request({
-    url: '/v1/cities',
-    method: 'get',
-    params: {
-      type: 'guess'
-    }
+    url: '/v2/pois/' + geohash,
+    method: 'get'
   })
 }
+
 /**
- * 获取热门城市
+ * 获取首页食品分类
  */
-export const getHotCity = () => {
+export const getFoodTypes = geohash => {
   return request({
-    url: '/v1/cities',
+    url: '/v2/index_entry',
     method: 'get',
     params: {
-      type: 'hot'
-    }
-  })
-}
-/**
- * 获取城市列表
- */
-export const getGroupCity = () => {
-  return request({
-    url: '/v1/cities',
-    method: 'get',
-    params: {
-      type: 'group'
+      geohash,
+      group_type: '1',
+      'flags[]': 'F'
     }
   })
 }

@@ -1,6 +1,6 @@
 <template>
   <!-- 头部 -->
-  <van-nav-bar title="登录">
+  <van-nav-bar :title="headTitle">
     <template #left>
       <van-icon name="search" size="18" />
     </template>
@@ -22,28 +22,16 @@
   <!-- 分类 -->
   <div class="classify">
     <van-swipe class="swipe-cont" indicator-color="@theme-color">
-      <van-swipe-item>
+      <van-swipe-item v-for="(item, index) in foodTypes" :key="index">
         <van-grid :border="false">
-          <!-- <van-grid-item v-for="item in 8">
+          <van-grid-item v-for="subItem in item" :key="subItem.id">
             <van-image
               width="1.12rem"
               height="1.12rem"
-              src="https://fuss10.elemecdn.com/2/35/696aa5cf9820adada9b11a3d14bf5jpeg.jpeg"
+              :src="`${imgBaseUrl}${subItem.image_url}`"
             />
-            <span class="desc">甜品饮料</span>
-          </van-grid-item> -->
-        </van-grid>
-      </van-swipe-item>
-      <van-swipe-item>
-        <van-grid :border="false">
-          <!-- <van-grid-item v-for="item in 8">
-            <van-image
-              width="1.12rem"
-              height="1.12rem"
-              src="https://fuss10.elemecdn.com/2/35/696aa5cf9820adada9b11a3d14bf5jpeg.jpeg"
-            />
-            <span class="desc">甜品饮料</span>
-          </van-grid-item> -->
+            <span class="desc">{{ subItem.title }}</span>
+          </van-grid-item>
         </van-grid>
       </van-swipe-item>
     </van-swipe>
@@ -115,10 +103,100 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { getCityGuess, getAddress, getFoodTypes } from 'api'
+
 const store = useStore()
 const router = useRouter()
+const route = useRoute()
+
 const rate = ref(1)
+
+// 头部 start
+const headTitle = ref('')
+// 头部 end
+
+// 页面初始化逻辑 start
+const geohash = ref('')
+
+/**
+ * 请求首页默认地址
+ */
+const requestDefaultCity = async () => {
+  const res = await getCityGuess()
+  geohash.value = res.latitude + ',' + res.longitude
+}
+
+/**
+ * 请求地址信息
+ */
+const requestAddress = () => {
+  return new Promise(resolve => {
+    getAddress(geohash.value).then(res => {
+      headTitle.value = res.name
+      resolve(res)
+    })
+  })
+}
+
+/**
+ * 初始化地址信息
+ */
+const initCityInfo = async () => {
+  // 判断是否有geohash，如果没有就请求接口获取
+  if (route.query.geohash) {
+    geohash.value = route.query.geohash
+  } else {
+    // 请求获取
+    await requestDefaultCity()
+  }
+
+  // 保存geohash到vuex
+  store.commit('home/saveGeohash', geohash.value)
+
+  // 请求地址信息
+  const address = await requestAddress()
+
+  // 保存地址信息
+  store.commit('home/saveAddress', address)
+}
+
+// 初始化地址信息
+initCityInfo()
+
+// 页面初始化逻辑 end
+
+// 导航食品分类 start
+// 分类列表
+const foodTypes = ref([])
+// 图片域名地址
+const imgBaseUrl = ref('https://fuss10.elemecdn.com')
+/**
+ * 请求食品分类
+ */
+const questFoodTypes = async () => {
+  const foodTypesList = []
+  const res = await getFoodTypes()
+  const newArr = [...res] // 新数组
+  // 处理成二维数组
+  for (let i = 0, j = 0; i < res.length; i += 8, j++) {
+    foodTypesList[j] = newArr.splice(0, 8)
+  }
+
+  foodTypes.value = foodTypesList
+}
+
+/**
+ * 获取食品分类，并处理
+ */
+const handleFoodTypes = () => {
+  questFoodTypes()
+}
+
+// 获取食品分类
+handleFoodTypes()
+
+// 导航食品分类 end
 </script>
 
 <style lang="less" scoped>
