@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { Toast } from 'vant'
+import store from '@/store'
+import { SET_LOADING } from '@/store/mutation-types.js'
 
 // 当前loading的显示状态
 let loading = false
@@ -81,11 +83,8 @@ function showLoading() {
 
   // loading状态为隐藏，并且是第一个请求
   if (!loading && requestCount === 1) {
-    Toast.loading({
-      message: '加载中...',
-      forbidClick: true,
-      duration: 0
-    })
+    // 显示loading
+    store.commit(`loading/${SET_LOADING}`, true)
     loading = true
   }
 }
@@ -99,7 +98,8 @@ function closeLoading() {
 
   // loading状态为展示，并且是最后一个请求
   if (loading && requestCount === 0) {
-    Toast.clear()
+    // 隐藏loading
+    store.commit(`loading/${SET_LOADING}`, false)
     loading = false
   }
 }

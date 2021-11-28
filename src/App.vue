@@ -1,12 +1,17 @@
 <template>
+  <loading></loading>
   <router-view></router-view>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
+import Loading from '@/components/common/Loading.vue'
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  components: {
+    Loading
+  }
 })
 </script>
 

@@ -14,7 +14,9 @@ import {
   Grid,
   GridItem,
   Image as VanImage,
-  Rate
+  Rate,
+  List,
+  Loading
 } from 'vant'
 
 export default app => {
@@ -35,4 +37,6 @@ export default app => {
     .use(GridItem)
     .use(VanImage)
     .use(Rate)
+    .use(List)
+    .use(Loading)
 }

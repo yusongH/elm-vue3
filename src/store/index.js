@@ -14,12 +14,7 @@ for (const key in modulesFiles) {
 }
 
 const store = createStore({
-  modules,
-  state() {
-    return {
-      token: ''
-    }
-  }
+  modules
 })
 
 export default store
