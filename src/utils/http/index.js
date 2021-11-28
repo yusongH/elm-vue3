@@ -23,7 +23,8 @@ service.interceptors.request.use(
       config.params._t = new Date().getTime()
     }
 
-    if (config.isShowLoading) {
+    // 没有传默认显示loading
+    if (config.isShowLoading || config.isShowLoading === undefined) {
       // 显示loading
       showLoading()
     }
@@ -38,7 +39,10 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    if (response.config.isShowLoading) {
+    if (
+      response.config.isShowLoading ||
+      response.config.isShowLoading === undefined
+    ) {
       // 关闭loading
       closeLoading()
     }
@@ -72,7 +76,11 @@ function showLoading() {
 
   // loading状态为隐藏，并且是第一个请求
   if (!loading && requestCount === 1) {
-    Toast.loading('加载中...')
+    Toast.loading({
+      message: '加载中...',
+      forbidClick: true,
+      duration: 0
+    })
     loading = true
   }
 }
