@@ -8,18 +8,31 @@ import {
   Cell,
   Icon,
   Tabbar,
-  TabbarItem
+  TabbarItem,
+  Swipe,
+  SwipeItem,
+  Grid,
+  GridItem,
+  Image as VanImage,
+  Rate
 } from 'vant'
 
 export default app => {
-  app.use(Button)
-  app.use(NavBar)
-  app.use(Form)
-  app.use(Field)
-  app.use(CellGroup)
-  app.use(Cell)
-  app.use(Toast)
-  app.use(Icon)
-  app.use(Tabbar)
-  app.use(TabbarItem)
+  app
+    .use(Button)
+    .use(NavBar)
+    .use(Form)
+    .use(Field)
+    .use(CellGroup)
+    .use(Cell)
+    .use(Toast)
+    .use(Icon)
+    .use(Tabbar)
+    .use(TabbarItem)
+    .use(Swipe)
+    .use(SwipeItem)
+    .use(Grid)
+    .use(GridItem)
+    .use(VanImage)
+    .use(Rate)
 }

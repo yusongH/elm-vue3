@@ -52,6 +52,7 @@
             v-for="subItem in value"
             :key="subItem.id"
             @click="onClickCity(subItem)"
+            class="ellipsis"
           >
             {{ subItem.name }}
           </li>
@@ -190,7 +191,6 @@ export default defineComponent({
           border-right: 1px solid #e4e4e4;
           height: 36px;
           line-height: 36px;
-          .te();
         }
       }
     }

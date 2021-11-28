@@ -125,6 +125,8 @@ export default defineComponent({
       } else {
         // 登录成功，保存用户信息
         store.commit('user/saveUserInfo', res)
+        // 返回上一页
+        router.go(-1)
       }
     }
 
