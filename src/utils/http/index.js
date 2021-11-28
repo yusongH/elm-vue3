@@ -53,6 +53,11 @@ service.interceptors.response.use(
     }
   },
   err => {
+    if (err.config.isShowLoading || err.config.isShowLoading === undefined) {
+      // 关闭loading
+      closeLoading()
+    }
+
     // 超时提示
     if (err.message.includes('timeout')) {
       Toast.fail('request timeout')
