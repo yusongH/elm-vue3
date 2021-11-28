@@ -24,7 +24,12 @@
     <van-swipe class="swipe-cont" indicator-color="@theme-color">
       <van-swipe-item v-for="(item, index) in foodTypes" :key="index">
         <van-grid :border="false">
-          <van-grid-item v-for="subItem in item" :key="subItem.id">
+          <!-- 跳转todo -->
+          <van-grid-item
+            v-for="subItem in item"
+            :key="subItem.id"
+            @click="router.push({ name: 'food' })"
+          >
             <van-image
               width="1.12rem"
               height="1.12rem"

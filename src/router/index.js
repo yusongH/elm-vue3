@@ -10,7 +10,12 @@ const routes = [
       {
         path: 'home',
         name: 'home',
-        component: () => import('@/views/main/children/Home.vue')
+        component: () => import('@/views/main/children/home/Index.vue')
+      },
+      {
+        path: 'food',
+        name: 'food',
+        component: () => import('@/views/main/children/home/children/Food.vue')
       },
       {
         path: 'search',
