@@ -48,60 +48,11 @@
       <van-icon name="shop-o" size="0.4rem" />
       <span class="text">附近商家</span>
     </div>
-    <div class="content">
-      <ul>
-        <li>
-          <div class="image">
-            <van-image
-              width="100%"
-              height="100%"
-              src="http://elm.cangdu.org/img/164ad0b6a3917599.jpg"
-            />
-          </div>
-          <div class="detail">
-            <div>
-              <div class="top-left ellipsis">
-                <span class="top-left-tag">品牌</span>
-                <span>效果演示</span>
-              </div>
-              <div class="top-right">
-                <span>保</span>
-                <span>准</span>
-                <span>票</span>
-              </div>
-            </div>
-            <div class="detail-middle">
-              <div class="middle-left">
-                <van-rate
-                  v-model="rate"
-                  readonly
-                  size="0.26667rem"
-                  color="#ff9a0d"
-                />
-                <span class="nmber">4.6</span>
-                <span class="monthly-sale">月售199单</span>
-              </div>
-              <div class="middle-right">
-                <span class="middle-right-send">蜂鸟转送</span>
-                <span class="middle-right-arrive">准时达</span>
-              </div>
-            </div>
-            <div>
-              <div class="bottom-left">
-                <span class="bottom-left-inner">￥20起送</span>
-                <span class="bottom-left-inner">/</span>
-                <span class="bottom-left-inner">配送费约5￥</span>
-              </div>
-              <div class="bottom-right">
-                <span class="bottom-right-inner">10公里</span>
-                <span class="bottom-right-inner">/</span>
-                <span class="bottom-right-inner blue">40分钟</span>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <shop-list
+      :geohash="geohash"
+      :latitude="latitude"
+      :longitude="longitude"
+    ></shop-list>
   </div>
 </template>
 
@@ -110,12 +61,12 @@ import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { getCityGuess, getAddress, getFoodTypes } from 'api'
+import ShopList from '@/components/ShopList.vue'
+import { SAVE_GEOHASH, SAVE_ADDRESS } from '@/store/mutation-types.js'
 
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
-
-const rate = ref(1)
 
 // 头部 start
 const headTitle = ref('')
@@ -123,6 +74,8 @@ const headTitle = ref('')
 
 // 页面初始化逻辑 start
 const geohash = ref('')
+const latitude = ref('') // 经度
+const longitude = ref('') // 纬度
 
 /**
  * 请求首页默认地址
@@ -130,6 +83,8 @@ const geohash = ref('')
 const requestDefaultCity = async () => {
   const res = await getCityGuess()
   geohash.value = res.latitude + ',' + res.longitude
+  latitude.value = res.latitude + ''
+  longitude.value = res.longitude + ''
 }
 
 /**
@@ -151,19 +106,21 @@ const initCityInfo = async () => {
   // 判断是否有geohash，如果没有就请求接口获取
   if (route.query.geohash) {
     geohash.value = route.query.geohash
+    latitude.value = geohash.value.split(',')[0]
+    longitude.value = geohash.value.split(',')[1]
   } else {
     // 请求获取
     await requestDefaultCity()
   }
 
   // 保存geohash到vuex
-  store.commit('home/saveGeohash', geohash.value)
+  store.commit(`home/${SAVE_GEOHASH}`, geohash.value)
 
   // 请求地址信息
   const address = await requestAddress()
 
   // 保存地址信息
-  store.commit('home/saveAddress', address)
+  store.commit(`home/${SAVE_ADDRESS}`, address)
 }
 
 // 初始化地址信息
@@ -230,104 +187,6 @@ handleFoodTypes()
     align-items: center;
     .text {
       margin-left: 6px;
-    }
-  }
-
-  .content {
-    li {
-      padding: 16px 10px;
-      display: flex;
-      border: 1px solid #f1f1f1;
-      .image {
-        width: 64px;
-        height: 64px;
-      }
-
-      .detail {
-        flex: 1;
-        padding: 0 6px;
-        > div {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: @font-size-12;
-
-          .top-left {
-            font-weight: 700;
-            .top-left-tag {
-              padding: 0 4px;
-              margin-right: 4px;
-              background-color: #ffd930;
-            }
-          }
-
-          .top-right {
-            transform: scale(0.8);
-            display: flex;
-            margin-right: -6px;
-            span {
-              color: #999;
-              border: 1px solid #f1f1f1;
-              padding: 0 2px;
-              border-radius: 2px;
-              margin-left: 2px;
-            }
-          }
-
-          &.detail-middle {
-            margin: 10px 0px;
-            .middle-left {
-              .nmber {
-                color: #ff6000;
-                margin: 0 6px;
-              }
-              .monthly-sale {
-                display: inline-block;
-                transform: scale(0.8);
-                color: #666;
-              }
-            }
-
-            .middle-right {
-              transform: scale(0.8);
-              margin-right: -8px;
-              .middle-right-send {
-                color: #fff;
-                background-color: @theme-color;
-                border: 1px solid @theme-color;
-                padding: 0 2px;
-              }
-
-              .middle-right-arrive {
-                color: @theme-color;
-                border: 1px solid @theme-color;
-                padding: 0 2px;
-              }
-            }
-          }
-
-          .bottom-left {
-            margin-left: -4px;
-            .bottom-left-inner {
-              display: inline-block;
-              transform: scale(0.8);
-              color: #666;
-            }
-          }
-
-          .bottom-right {
-            margin-right: -4px;
-            .bottom-right-inner {
-              display: inline-block;
-              transform: scale(0.8);
-              color: #666;
-              &.blue {
-                color: @theme-color;
-              }
-            }
-          }
-        }
-      }
     }
   }
 }

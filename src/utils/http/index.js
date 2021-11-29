@@ -42,8 +42,8 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     if (
-      response.config.isShowLoading ||
-      response.config.isShowLoading === undefined
+      response?.config?.isShowLoading ||
+      response?.config?.isShowLoading === undefined
     ) {
       // 关闭loading
       closeLoading()
@@ -51,22 +51,29 @@ service.interceptors.response.use(
 
     // 200状态码
     if (response.status === 200) {
+      // 统一错误提示
+      if (response?.data?.status === 0) {
+        Toast.fail(response.data.message)
+      }
       return response.data
     }
   },
   err => {
-    if (err.config.isShowLoading || err.config.isShowLoading === undefined) {
+    if (
+      err?.config?.isShowLoading ||
+      err?.config?.isShowLoading === undefined
+    ) {
       // 关闭loading
       closeLoading()
     }
 
     // 超时提示
-    if (err.message.includes('timeout')) {
+    if (err?.message.includes('timeout')) {
       Toast.fail('request timeout')
     }
 
     // 处理500等错误
-    if (err.response.status === 500) {
+    if (err?.response?.status === 500) {
       Toast.fail('server error')
     }
 

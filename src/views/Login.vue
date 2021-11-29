@@ -58,6 +58,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { getCaptchas, accountLogin } from 'api'
 import { Toast } from 'vant'
+import { SAVE_USER_INFO } from '@/store/mutation-types.js'
 
 export default defineComponent({
   name: 'Login',
@@ -124,7 +125,7 @@ export default defineComponent({
         Toast.fail(res.message)
       } else {
         // 登录成功，保存用户信息
-        store.commit('user/saveUserInfo', res)
+        store.commit(`user/${SAVE_USER_INFO}`, res)
         // 返回上一页
         router.go(-1)
       }

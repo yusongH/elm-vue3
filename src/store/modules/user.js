@@ -1,11 +1,18 @@
+import { SAVE_USER_INFO } from '@/store/mutation-types.js'
+
 const state = () => {
   return {
-    userInfo: {}
+    userInfo: {} // 用户信息
   }
 }
 
 const mutations = {
-  saveUserInfo(state, userInfo) {
+  /**
+   * 保存用户信息
+   * @param {*} state
+   * @param {*} userInfo 用户信息
+   */
+  [SAVE_USER_INFO](state, userInfo) {
     state.userInfo = userInfo
   }
 }
