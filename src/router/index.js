@@ -18,7 +18,7 @@ const routes = [
         component: () => import('@/views/main/children/home/children/Food.vue')
       },
       {
-        path: 'search',
+        path: 'search/:geohash',
         name: 'search',
         component: () => import('@/views/main/children/Search.vue')
       },

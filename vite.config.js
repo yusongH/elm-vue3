@@ -57,6 +57,9 @@ export default defineConfig({
       '/v2': {
         target: 'http://localhost:8001'
       },
+      '/v4': {
+        target: 'http://localhost:8001'
+      },
       '/shopping': {
         target: 'http://localhost:8001'
       }

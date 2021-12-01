@@ -138,7 +138,7 @@ const initData = () => {
   const searchHistory = getStorage('searchHistory')
 
   if (searchHistory) {
-    searchHistoryList.value = searchHistory
+    searchHistoryList.value = JSON.parse(searchHistory)
   }
 }
 

@@ -16,7 +16,10 @@ import {
   Image as VanImage,
   Rate,
   List,
-  Loading
+  Loading,
+  DropdownMenu,
+  DropdownItem,
+  Search
 } from 'vant'
 
 export default app => {
@@ -39,4 +42,7 @@ export default app => {
     .use(Rate)
     .use(List)
     .use(Loading)
+    .use(DropdownMenu)
+    .use(DropdownItem)
+    .use(Search)
 }

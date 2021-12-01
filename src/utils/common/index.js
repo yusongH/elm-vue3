@@ -3,7 +3,7 @@
  */
 export const getStorage = name => {
   if (!name) return
-  return JSON.parse(localStorage.getItem(name))
+  return localStorage.getItem(name)
 }
 
 /**

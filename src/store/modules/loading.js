@@ -13,8 +13,6 @@ const mutations = {
    * @param {*} isShowLoading 是否显示loading
    */
   [SET_LOADING](state, isShowLoading) {
-    console.log('----', isShowLoading)
-
     state.isShowLoading = isShowLoading
   }
 }

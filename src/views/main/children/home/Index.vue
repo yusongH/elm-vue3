@@ -2,7 +2,11 @@
   <!-- 头部 -->
   <van-nav-bar :title="headTitle">
     <template #left>
-      <van-icon name="search" size="18" />
+      <van-icon
+        @click="router.push({ path: `/search/${geohash}` })"
+        name="search"
+        size="18"
+      />
     </template>
     <template #right>
       <div
