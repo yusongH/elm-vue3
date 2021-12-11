@@ -3,7 +3,9 @@ import { SAVE_GEOHASH, SAVE_ADDRESS } from '@/store/mutation-types.js'
 const state = () => {
   return {
     geohash: '', // 当前的geohash
-    address: '' // 当前的地址信息
+    address: '', // 当前的地址信息
+    latitude: '', // 经度
+    longitude: '' // 纬度
   }
 }
 
@@ -11,7 +13,6 @@ const mutations = {
   /**
    * 保存geohash
    * @param {*} state
-   * @param {*} geohash geohash
    */
   [SAVE_GEOHASH](state, geohash) {
     state.geohash = geohash
@@ -23,6 +24,8 @@ const mutations = {
    */
   [SAVE_ADDRESS](state, address) {
     state.address = address
+    state.latitude = address.latitude
+    state.longitude = address.longitude
   }
 }
 

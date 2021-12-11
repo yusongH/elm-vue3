@@ -32,7 +32,16 @@
           <van-grid-item
             v-for="subItem in item"
             :key="subItem.id"
-            @click="router.push({ name: 'food' })"
+            @click="
+              router.push({
+                name: 'food',
+                query: {
+                  title: subItem.title,
+                  geohash,
+                  resCategoryId: getCategoryId(subItem.link)
+                }
+              })
+            "
           >
             <van-image
               width="1.12rem"
@@ -61,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { getCityGuess, getAddress, getFoodTypes } from 'api'
@@ -87,8 +96,6 @@ const longitude = ref('') // 纬度
 const requestDefaultCity = async () => {
   const res = await getCityGuess()
   geohash.value = res.latitude + ',' + res.longitude
-  latitude.value = res.latitude + ''
-  longitude.value = res.longitude + ''
 }
 
 /**
@@ -108,13 +115,11 @@ const requestAddress = () => {
  */
 const initCityInfo = async () => {
   // 判断是否有geohash，如果没有就请求接口获取
-  if (route.query.geohash) {
-    geohash.value = route.query.geohash
-    latitude.value = geohash.value.split(',')[0]
-    longitude.value = geohash.value.split(',')[1]
-  } else {
+  if (!route.query.geohash) {
     // 请求获取
     await requestDefaultCity()
+  } else {
+    geohash.value = route.query.geohash
   }
 
   // 保存geohash到vuex
@@ -125,10 +130,16 @@ const initCityInfo = async () => {
 
   // 保存地址信息
   store.commit(`home/${SAVE_ADDRESS}`, address)
+
+  // 保存经度纬度
+  longitude.value = address.longitude
+  latitude.value = address.latitude
 }
 
-// 初始化地址信息
-initCityInfo()
+onMounted(() => {
+  // 初始化地址信息
+  initCityInfo()
+})
 
 // 页面初始化逻辑 end
 
@@ -142,7 +153,7 @@ const imgBaseUrl = ref('https://fuss10.elemecdn.com')
  */
 const questFoodTypes = async () => {
   const foodTypesList = []
-  const res = await getFoodTypes()
+  const res = await getFoodTypes(geohash.value)
   const newArr = [...res] // 新数组
   // 处理成二维数组
   for (let i = 0, j = 0; i < res.length; i += 8, j++) {
@@ -159,8 +170,24 @@ const handleFoodTypes = () => {
   questFoodTypes()
 }
 
-// 获取食品分类
-handleFoodTypes()
+/**
+ * 获取食品分类id
+ * @param {string} url 链接
+ */
+const getCategoryId = url => {
+  const urlData = decodeURIComponent(
+    url.split('=')[1].replace('&target_name', '')
+  )
+  if (/restaurant_category_id/gi.test(urlData)) {
+    return JSON.parse(urlData).restaurant_category_id.id
+  }
+  return ''
+}
+
+watch(geohash, () => {
+  // 获取食品分类
+  handleFoodTypes()
+})
 
 // 导航食品分类 end
 </script>

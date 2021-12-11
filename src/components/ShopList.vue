@@ -103,10 +103,10 @@ const finished = ref(false) // 是否全部加载完毕
 const offset = ref(0) // 每次加载的其实页下标
 const shopList = reactive([]) // 商店列表
 
-// 侦听geohash
+// 侦听latitude
 watch(
   () => {
-    return props.geohash
+    return props.latitude
   },
   () => {
     // 获取商店数据
