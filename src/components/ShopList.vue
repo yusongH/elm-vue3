@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, watch, reactive } from 'vue'
+import { ref, defineProps, watch, reactive, toRefs, defineExpose } from 'vue'
 import { getShopList } from 'api'
 
 // 声明props start
@@ -93,8 +93,38 @@ const props = defineProps({
   latitude: {
     type: String,
     default: ''
+  },
+  restaurantCategoryId: {
+    type: [Number, String],
+    default: ''
+  },
+  screenTypeId: {
+    type: [Number, String],
+    default: ''
+  },
+  sortType: {
+    type: Number,
+    default: 0
+  },
+  deliveryId: {
+    type: String,
+    default: ''
+  },
+  supportIds: {
+    type: Array,
+    default: () => []
   }
 })
+
+const {
+  latitude,
+  longitude,
+  restaurantCategoryId,
+  screenTypeId,
+  sortType,
+  deliveryId,
+  supportIds
+} = toRefs(props)
 // 声明props end
 
 // 获取店铺列表 start
@@ -103,34 +133,68 @@ const finished = ref(false) // 是否全部加载完毕
 const offset = ref(0) // 每次加载的其实页下标
 const shopList = reactive([]) // 商店列表
 
-// 侦听latitude
-watch(
-  () => {
-    return props.latitude
-  },
-  () => {
-    // 获取商店数据
-    onLoad()
-  }
-)
-
+// 侦听，重新获取数据
+watch([latitude, screenTypeId, sortType], () => {
+  // 获取商店数据
+  initData()
+})
 /**
- * 商店列表加载方法
+ * 商店列表初始获取数据方法
  */
-const onLoad = async () => {
+const initData = async () => {
   // 显示loading
   loading.value = true
-  // 获取经纬度
-  const { latitude, longitude } = props
 
-  const res = await getShopList(latitude, longitude, offset.value)
+  // 每次请求20条
+  offset.value = 0
+
+  const res = await getShopList(
+    latitude.value,
+    longitude.value,
+    offset.value,
+    restaurantCategoryId.value,
+    screenTypeId.value,
+    sortType.value,
+    deliveryId.value,
+    supportIds.value
+  )
   if (res.status !== 0) {
     // 隐藏loading
     loading.value = false
     // 追加数据
     shopList.push(...res)
-    // 每次请求20条
-    offset.value += 20
+    // 是否加载完全部数据
+    if (res.length < 20) {
+      finished.value = true
+    }
+  }
+}
+
+/**
+ * 商店列表下拉加载方法
+ */
+const onLoad = async () => {
+  // 显示loading
+  loading.value = true
+
+  // 每次请求20条
+  offset.value += 20
+
+  const res = await getShopList(
+    latitude.value,
+    longitude.value,
+    offset.value,
+    restaurantCategoryId.value,
+    screenTypeId.value,
+    sortType.value,
+    deliveryId.value,
+    supportIds.value
+  )
+  if (res.status !== 0) {
+    // 隐藏loading
+    loading.value = false
+    // 追加数据
+    shopList.push(...res)
     // 是否加载完全部数据
     if (res.length < 20) {
       finished.value = true
@@ -152,10 +216,16 @@ const onTimeStatus = supports => {
 }
 
 // 获取店铺列表 end
+
+// 暴露组件方法和属性
+defineExpose({
+  initData
+})
 </script>
 
 <style lang="less" scoped>
 .shop-content {
+  height: 100%;
   .shop-item {
     padding: 16px 10px;
     display: flex;
@@ -176,6 +246,7 @@ const onTimeStatus = supports => {
 
         .top-left {
           font-weight: 700;
+          width: 200px;
           .top-left-tag {
             padding: 0 4px;
             margin-right: 4px;

@@ -47,61 +47,109 @@
         </ul>
       </div>
     </van-dropdown-item>
-    <van-dropdown-item title="排序" v-model="value2" :options="sortOptions" />
-    <van-dropdown-item class="screening" title="筛选" v-model="value2">
+    <van-dropdown-item title="排序" v-model="sortType" :options="sortOptions" />
+    <van-dropdown-item ref="droItemScrRef" class="screening" title="筛选">
       <div>
         <div class="screening-title">配送方式</div>
         <div class="screening-cont">
-          <tick-button @click="tickBtnClick">
-            <template #icon>
-              <svg>
-                <use
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  xlink:href="#fengniao"
-                ></use>
-              </svg>
-            </template>
-            蜂鸟专送
+          <tick-button
+            v-for="item in foodDeliveryList"
+            :key="item.id"
+            @click="deliveryBtnClick(item.id)"
+            :svgId="deliveryId == item.id ? 'selected' : 'fengniao'"
+          >
+            <span :class="{ 'theme-color': item.id === deliveryId }">{{
+              item.text
+            }}</span>
           </tick-button>
         </div>
       </div>
       <div>
         <div class="screening-title">商家属性（可以多选）</div>
         <div class="screening-cont">
-          <tick-button svgId="fengniao"></tick-button>
+          <tick-button
+            @click="activityBtnClick(index)"
+            v-for="(item, index) in activityList"
+            :key="item.id"
+          >
+            <template #icon>
+              <svg v-show="item.status">
+                <use
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  xlink:href="#selected"
+                ></use>
+              </svg>
+              <div
+                v-show="!item.status"
+                :style="{
+                  color: '#' + item.icon_color,
+                  borderColor: '#' + item.icon_color
+                }"
+                class="activity-icon"
+              >
+                {{ item.icon_name }}
+              </div>
+            </template>
+            <span :class="{ 'theme-color': item.status }">{{ item.name }}</span>
+          </tick-button>
         </div>
       </div>
       <!-- 确认操作区 -->
       <div class="operate-area">
-        <van-button size="small" plain type="primary">清空</van-button>
-        <van-button size="small" type="primary">确定</van-button>
+        <van-button size="small" plain type="primary" @click="clearClick"
+          >清空</van-button
+        >
+        <van-button size="small" type="primary" @click="confirmClick"
+          >确定<span v-show="selectNum">{{
+            `(${selectNum})`
+          }}</span></van-button
+        >
       </div>
     </van-dropdown-item>
   </van-dropdown-menu>
 
-  <!-- 商店列表 -->
-  <shop-list></shop-list>
+  <div class="shop-list-cont">
+    <!-- 商店列表 -->
+    <shop-list
+      ref="shopListRef"
+      :latitude="latitude"
+      :longitude="longitude"
+      :restaurantCategoryId="restaurantCategoryId"
+      :screenTypeId="screenTypeId"
+      :sortType="sortType"
+      :deliveryId="deliveryId"
+      :supportIds="supportIds"
+    ></shop-list>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import ShopList from '@/components/ShopList.vue'
 import TickButton from '@/components/TickButton.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { getAddress, getFoodCategory } from 'api'
+import {
+  getAddress,
+  getFoodCategory,
+  getFoodDelivery,
+  getFoodActivity
+} from 'api'
 import { SAVE_ADDRESS } from '@/store/mutation-types.js'
 import { getImgPath } from 'utils/get-img-path'
 
 const router = useRouter()
 const route = useRoute()
-const { state, commit } = useStore()
+const store = useStore()
 
 // 全局需要使用的数据 start
 const curGeohash = ref('') // geohash
 const foodTitle = ref('') // 分类下拉显示的标题
 const restaurantCategoryId = ref('') // 分类id
 const screenTypeId = ref('') // 筛选类型id
+const latitude = ref('') // 经度
+const longitude = ref('') // 纬度
+const shopListRef = ref(null) // 列表组件
 // 全局需要使用的数据 end
 
 // 头部 start
@@ -140,12 +188,15 @@ const clickCate = (id, index) => {
 const screenTypeClick = (id, name) => {
   screenTypeId.value = id
   headTitle.value = name
+
+  // 收起下拉
+  droItemCateRef.value?.toggle()
 }
 
 // 分类下拉 end
 
 // 排序 start
-const value2 = ref('a')
+const sortType = ref(0)
 const sortOptions = [
   { text: '智能排序', value: 0 },
   { text: '距离最近', value: 5 },
@@ -157,11 +208,70 @@ const sortOptions = [
 // 排序 end
 
 // 筛选 start
+const foodDeliveryList = reactive([]) // 配送方式列表
+const deliveryId = ref('') // 配送方式
+const activityList = reactive([]) // 商家属性列表
+const selectNum = ref(0) // 选中的配送方式和商家属性
+const droItemScrRef = ref(null) // 组件实例
+
+const supportIds = computed(() => {
+  return activityList.map(item => {
+    return {
+      status: item.status,
+      id: item.id
+    }
+  })
+})
+
 /**
- * 筛选的勾选按钮点击
+ * 筛选的配送方式勾选按钮点击
+ * @param {String} id 配送方式id
  */
-const tickBtnClick = () => {
-  console.log('---=-=-=')
+const deliveryBtnClick = id => {
+  if (id === deliveryId.value) {
+    deliveryId.value = ''
+    selectNum.value--
+  } else {
+    deliveryId.value = id
+    selectNum.value++
+  }
+}
+
+/**
+ * 筛选的商家属性勾选按钮点击
+ * @param {String} index 商家属性id
+ */
+const activityBtnClick = index => {
+  if (activityList[index].status) {
+    selectNum.value--
+  } else {
+    selectNum.value++
+  }
+  activityList[index].status = !activityList[index].status
+}
+
+/**
+ * 清空
+ */
+const clearClick = () => {
+  // 配送方式
+  deliveryId.value = ''
+  // 商家属性
+  activityList.forEach(item => {
+    item.status = false
+  })
+
+  selectNum.value = 0
+}
+
+/**
+ * 确定
+ */
+const confirmClick = () => {
+  // 获取数据
+  shopListRef.value?.initData()
+  // 收起下拉
+  droItemScrRef.value?.toggle()
 }
 // 筛选 end
 
@@ -180,15 +290,17 @@ const initData = async () => {
   restaurantCategoryId.value = resCategoryId // 分类id
 
   // 防止页面刷新vuex中的经度（latitude）丢失
-  const { latitude, longitude } = state.home
-  if (!latitude) {
+  if (!latitude.value.vlue) {
     const res = await getAddress(curGeohash.value)
     // 保存地址信息
-    commit(`home/${SAVE_ADDRESS}`, res)
+    store.commit(`home/${SAVE_ADDRESS}`, res)
+    // 保存经度纬度
+    latitude.value = store.state.home.latitude
+    longitude.value = store.state.home.longitude
   }
 
   // 获取category分类左侧数据
-  categoryList.value = await getFoodCategory(latitude, longitude)
+  categoryList.value = await getFoodCategory(latitude.value, longitude.value)
   // 初始化时定位当前category分类左侧默认选择项，在右侧展示出其sub_categories列表
   categoryList.value.forEach(item => {
     if (
@@ -198,6 +310,18 @@ const initData = async () => {
     ) {
       screenTypeList.value = item.sub_categories
     }
+  })
+
+  // 获取筛选列表的配送方式
+  const deliveryListRes = await getFoodDelivery(latitude.value, longitude.value)
+  foodDeliveryList.push(...deliveryListRes)
+
+  // 获取筛选列表的商铺活动
+  const activityListRes = await getFoodActivity(latitude.value, longitude.value)
+  activityList.push(...activityListRes)
+  activityList.forEach(item => {
+    // 是否勾选
+    item.status = false
   })
 }
 
@@ -265,7 +389,10 @@ onMounted(() => {
 
 .screening {
   .sc(12px, #333);
-  background-color: @theme-bgc;
+
+  .theme-color {
+    color: @theme-color;
+  }
   :deep(.van-dropdown-item__content) {
     padding-bottom: 10px;
   }
@@ -279,11 +406,23 @@ onMounted(() => {
   .screening-cont {
     padding: 0 10px;
     display: flex;
-    justify-content: space-between;
-    :deep(svg) {
-      width: 18px;
-      height: 18px;
-      margin-right: 4px;
+    flex-wrap: wrap;
+    :deep(.tick-button) {
+      margin-right: 20px;
+      margin-bottom: 10px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+        margin-right: 4px;
+      }
+
+      .activity-icon {
+        padding: 1px 3px;
+        border: 0.025rem solid;
+        border-radius: 4px;
+        margin-right: 6px;
+      }
     }
   }
   .operate-area {
@@ -294,5 +433,10 @@ onMounted(() => {
       width: 48%;
     }
   }
+}
+
+.shop-list-cont {
+  height: calc(100% - 92px);
+  overflow-y: auto;
 }
 </style>

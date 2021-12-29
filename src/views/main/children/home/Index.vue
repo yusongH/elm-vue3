@@ -61,11 +61,13 @@
       <van-icon name="shop-o" size="0.4rem" />
       <span class="text">附近商家</span>
     </div>
-    <shop-list
-      :geohash="geohash"
-      :latitude="latitude"
-      :longitude="longitude"
-    ></shop-list>
+    <div class="nearby-cont">
+      <shop-list
+        :geohash="geohash"
+        :latitude="latitude"
+        :longitude="longitude"
+      ></shop-list>
+    </div>
   </div>
 </template>
 
@@ -209,6 +211,7 @@ watch(geohash, () => {
 
 .nearby-merchants {
   background-color: #fff;
+  height: calc(100% - 256px);
   .title {
     .sc(@font-size-12, #999);
     height: 40px;
@@ -219,6 +222,11 @@ watch(geohash, () => {
     .text {
       margin-left: 6px;
     }
+  }
+
+  .nearby-cont {
+    height: calc(100% - 40px);
+    overflow-y: auto;
   }
 }
 </style>
