@@ -43,6 +43,7 @@ export const getShopList = (
   return request({
     url: '/shopping/restaurants',
     method: 'get',
-    params
+    params,
+    isShowLoading: false
   })
 }
