@@ -23,45 +23,45 @@
     </template>
   </van-nav-bar>
 
-  <!-- 分类 -->
-  <div class="classify">
-    <van-swipe class="swipe-cont" indicator-color="@theme-color">
-      <van-swipe-item v-for="(item, index) in foodTypes" :key="index">
-        <van-grid :border="false">
-          <!-- 跳转todo -->
-          <van-grid-item
-            v-for="subItem in item"
-            :key="subItem.id"
-            @click="
-              router.push({
-                name: 'food',
-                query: {
-                  title: subItem.title,
-                  geohash,
-                  resCategoryId: getCategoryId(subItem.link)
-                }
-              })
-            "
-          >
-            <van-image
-              width="1.12rem"
-              height="1.12rem"
-              :src="`${imgBaseUrl}${subItem.image_url}`"
-            />
-            <span class="desc">{{ subItem.title }}</span>
-          </van-grid-item>
-        </van-grid>
-      </van-swipe-item>
-    </van-swipe>
-  </div>
-
-  <!-- 附近商家 -->
-  <div class="nearby-merchants">
-    <div class="title">
-      <van-icon name="shop-o" size="0.4rem" />
-      <span class="text">附近商家</span>
+  <div class="home-content">
+    <!-- 分类 -->
+    <div class="classify">
+      <van-swipe class="swipe-cont" indicator-color="@theme-color">
+        <van-swipe-item v-for="(item, index) in foodTypes" :key="index">
+          <van-grid :border="false">
+            <!-- 跳转todo -->
+            <van-grid-item
+              v-for="subItem in item"
+              :key="subItem.id"
+              @click="
+                router.push({
+                  name: 'food',
+                  query: {
+                    title: subItem.title,
+                    geohash,
+                    resCategoryId: getCategoryId(subItem.link)
+                  }
+                })
+              "
+            >
+              <van-image
+                width="1.12rem"
+                height="1.12rem"
+                :src="`${imgBaseUrl}${subItem.image_url}`"
+              />
+              <span class="desc">{{ subItem.title }}</span>
+            </van-grid-item>
+          </van-grid>
+        </van-swipe-item>
+      </van-swipe>
     </div>
-    <div class="nearby-cont">
+
+    <!-- 附近商家 -->
+    <div class="nearby-merchants">
+      <div class="title">
+        <van-icon name="shop-o" size="0.4rem" />
+        <span class="text">附近商家</span>
+      </div>
       <shop-list
         :geohash="geohash"
         :latitude="latitude"
@@ -195,38 +195,37 @@ watch(geohash, () => {
 </script>
 
 <style lang="less" scoped>
-.classify {
-  margin-bottom: 10px;
-  .swipe-cont {
-    background-color: #fff;
-    .van-swipe-item {
-      height: 200px;
-      text-align: center;
-      .desc {
-        .sc(@font-size-12, #666);
+.home-content {
+  height: calc(100% - 46px);
+  overflow-y: auto;
+  .classify {
+    margin-bottom: 10px;
+    .swipe-cont {
+      background-color: #fff;
+      .van-swipe-item {
+        height: 200px;
+        text-align: center;
+        .desc {
+          .sc(@font-size-12, #666);
+        }
       }
     }
   }
-}
 
-.nearby-merchants {
-  background-color: #fff;
-  height: calc(100% - 256px);
-  .title {
-    .sc(@font-size-12, #999);
-    height: 40px;
-    line-height: 40px;
-    padding: 0 10px;
-    display: flex;
-    align-items: center;
-    .text {
-      margin-left: 6px;
+  .nearby-merchants {
+    background-color: #fff;
+    height: calc(100% - 256px);
+    .title {
+      .sc(@font-size-12, #999);
+      height: 40px;
+      line-height: 40px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      .text {
+        margin-left: 6px;
+      }
     }
-  }
-
-  .nearby-cont {
-    height: calc(100% - 40px);
-    overflow-y: auto;
   }
 }
 </style>

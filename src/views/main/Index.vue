@@ -18,7 +18,6 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-console.log('store', store)
 const { home } = toRefs(store.state)
 </script>
 
