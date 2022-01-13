@@ -9,7 +9,7 @@ let loading = false
 let requestCount = 0
 
 const service = axios.create({
-  // baseURL: '',
+  baseURL: import.meta.env.VITE_RESQUEST_BASEURL,
   // 统一超时时间，如有某个接口需要设置不同超时时间，可在调用接口是传入超时时间来覆盖这个超时时间
   timeout: 30 * 1000,
   // 请求是否携带cookie

@@ -19,7 +19,9 @@ import {
   Loading,
   DropdownMenu,
   DropdownItem,
-  Search
+  Search,
+  Row,
+  Col
 } from 'vant'
 
 export default app => {
@@ -45,4 +47,6 @@ export default app => {
     .use(DropdownMenu)
     .use(DropdownItem)
     .use(Search)
+    .use(Row)
+    .use(Col)
 }
