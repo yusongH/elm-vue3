@@ -1,19 +1,23 @@
 <template>
-  <img src="./assets/logo.jpeg">
+  <loading></loading>
+  <router-view></router-view>
+  <icon-svg></icon-svg>
 </template>
 
 <script>
-export default {
-  name: "app"
-}
+import { defineComponent } from 'vue'
+import Loading from '@/components/common/Loading.vue'
+import IconSvg from '@/components/common/Svg.vue'
+
+export default defineComponent({
+  name: 'App',
+  components: {
+    Loading,
+    IconSvg
+  }
+})
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<style lang="less">
+@import 'assets/styles/app.less';
 </style>
