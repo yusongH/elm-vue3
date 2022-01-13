@@ -29,7 +29,7 @@ jobs:
           # 登录阿里云镜像容器服务
           docker login --username=${{ secrets.DOCKER_USERNAME }} registry.cn-hangzhou.aliyuncs.com --password=${{ secrets.DOCKER_PASSWORD }}
           # 使用当前目录的 Dockerfile 创建镜像，标签为 elm-vue3:latest
-          docker build -t elm-vue3:latest . 
+          docker build -f /deploy/dockerfile -t elm-vue3:latest . 
           # 打标签
           docker tag elm-vue3 registry.cn-hangzhou.aliyuncs.com/yusongh/elm-vue3:latest
           # 推送到阿里云镜像容器服务
@@ -41,4 +41,4 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: cd /home/elm-vue3/ && sh dockerBootstrap.sh ${{ secrets.DOCKER_USERNAME }} ${{ secrets.DOCKER_PASSWORD }}
+          script: cd /home/elm-vue3/ && sh docker-bootstrap.sh ${{ secrets.DOCKER_USERNAME }} ${{ secrets.DOCKER_PASSWORD }}
