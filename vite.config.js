@@ -14,8 +14,8 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
         // 为了解决在vite下less的@import问题，把下面的'@/assets'改成绝对路径
         assets: path.resolve(__dirname, './src/assets'),
-        utils: '@/utils',
-        api: '@/api'
+        utils: path.resolve(__dirname, './src/utils'),
+        api: path.resolve(__dirname, './src/api')
       }
     },
     plugins: [
